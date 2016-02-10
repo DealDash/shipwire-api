@@ -151,18 +151,21 @@ class ShipwireConnector
         } catch (RequestException $e) {
             $response = $e->getResponse();
 
-            self::$logger->error($response);
+            if ($response) {
+                self::$logger->error($response);
 
-            $data = $response->json();
-            switch ($data['status']) {
-                case 401:
-                    throw new InvalidAuthorizationException($response['message'], $response['status']);
-                    break;
-                case 400:
-                    throw new InvalidRequestException($response['message'], $response['status']);
-                    break;
+                $data = $response->json();
+                switch ($data['status']) {
+                    case 401:
+                        throw new InvalidAuthorizationException($response['message'], $response['status']);
+                        break;
+                    case 400:
+                        throw new InvalidRequestException($response['message'], $response['status']);
+                        break;
+                }
+
+                throw new ShipwireConnectionException($response['message'], $response['status']);
             }
-            throw new ShipwireConnectionException($response['message'], $response['status']);
         } catch (\Exception $exception) {
             self::$logger->critical($exception);
             throw $exception;
