@@ -168,6 +168,8 @@ class ShipwireConnector
 
                 throw new ShipwireConnectionException($response['message'], $response['status']);
             }
+
+            throw new ShipwireConnectionException($e->getMessage(), $e->getCode());
         } catch (\Exception $exception) {
             self::$logger->critical($exception);
             throw $exception;
