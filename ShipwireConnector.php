@@ -151,6 +151,8 @@ class ShipwireConnector
         } catch (RequestException $e) {
             $response = $e->getResponse();
 
+            self::$logger->error($e);
+
             if ($response) {
                 self::$logger->error($response);
 
