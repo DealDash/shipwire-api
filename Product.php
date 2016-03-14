@@ -21,7 +21,7 @@ class Product extends ShipwireComponent
     {
         $params = [];
         if ($expand) {
-            $params['expand'] = 1;
+            $params['expand'] = 'all';
         }
 
         return $this->get($this->getRoute('products/{id}', $id), $params);
