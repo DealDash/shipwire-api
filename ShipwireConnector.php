@@ -64,7 +64,7 @@ class ShipwireConnector
      * @param LoggerInterface $logger
      * @param RetrySubscriber $retrySubscriber
      */
-    public static function init($username, $password, $environment = null, LoggerInterface $logger = null, RetrySubscriber $retrySubscriber)
+    public static function init($username, $password, $environment = null, LoggerInterface $logger = null, RetrySubscriber $retrySubscriber = null)
     {
         self::$authorizationCode = base64_encode($username . ':' . $password);
         if (null !== $environment) {
@@ -116,7 +116,7 @@ class ShipwireConnector
                 ]
             );
 
-            if (isset(self::$retrySubscriber)) {
+            if (self::$retrySubscriber) {
                 $this->client->getEmitter()->attach(self::$retrySubscriber);
             }
         }
