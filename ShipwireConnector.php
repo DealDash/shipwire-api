@@ -9,6 +9,7 @@ use GuzzleHttp\Client;
 use GuzzleHttp\Exception\RequestException;
 use Psr\Log\LoggerInterface;
 use Psr\Log\NullLogger;
+use GuzzleHttp\Subscriber\Retry\RetrySubscriber;
 
 class ShipwireConnector
 {
@@ -50,14 +51,20 @@ class ShipwireConnector
     static $logger;
 
     /**
+     * @var RetrySubscriber
+     */
+    static $retrySubscriber;
+
+    /**
      * Generates the connection instance for Shipwire
      *
      * @param                 $username
      * @param                 $password
      * @param null            $environment
      * @param LoggerInterface $logger
+     * @param RetrySubscriber $retrySubscriber
      */
-    public static function init($username, $password, $environment = null, LoggerInterface $logger = null)
+    public static function init($username, $password, $environment = null, LoggerInterface $logger = null, RetrySubscriber $retrySubscriber = null)
     {
         self::$authorizationCode = base64_encode($username . ':' . $password);
         if (null !== $environment) {
@@ -70,6 +77,8 @@ class ShipwireConnector
         self::$logger = $logger;
 
         self::$instance = null;
+
+        self::$retrySubscriber = $retrySubscriber;
     }
 
     /**
@@ -106,6 +115,10 @@ class ShipwireConnector
                     'base_url' => self::getEndpointUrl(),
                 ]
             );
+
+            if (self::$retrySubscriber) {
+                $this->client->getEmitter()->attach(self::$retrySubscriber);
+            }
         }
         return $this->client;
     }

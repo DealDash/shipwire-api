@@ -10,9 +10,10 @@
         }
     ],
     "require": {
-        "guzzlehttp/guzzle": "~5.0",
+        "guzzlehttp/guzzle": "~5.3",
         "justinrainbow/json-schema": "~1.3",
-        "psr/log": "1.0.0"
+        "psr/log": "^1.0",
+        "guzzlehttp/retry-subscriber": "^2.0"
     },
     "require-dev": {
         "codeception/codeception":"*",
